@@ -1,0 +1,75 @@
+import { useState } from 'react'
+import './App.css'
+
+function App() {
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    dob: ''
+  });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  }
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    console.log('Submitted:', formData);
+    // Add validation & backend call here
+  }
+
+  return (
+    <div className="app">
+      <form onSubmit={handleSubmit}>
+        <label>
+          Enter your first name
+          <input
+            type="text"
+            name="firstName"
+            placeholder="First name"
+            value={formData.firstName}
+            onChange={handleChange}
+            data-testid="firstName"
+          />
+        </label>
+        <label>
+          Enter your last name
+          <input
+            type="text"
+            name="lastName"
+            placeholder="Last name"
+            value={formData.lastName}
+            onChange={handleChange}
+            data-testid="lastName"
+          />
+        </label>
+        <label>
+          Enter your email address
+          <input
+            type="email"
+            name="email"
+            placeholder="Email"
+            value={formData.email}
+            onChange={handleChange}
+            data-testid="email"
+          />
+        </label>
+        <label>
+          Enter your date of birth
+          <input
+            type="date"
+            name="dob"
+            value={formData.dob}
+            onChange={handleChange}
+            data-testid="dob"
+          />
+        </label>
+        <button type="submit" data-testid="submit">Submit</button>
+      </form>
+    </div>
+  )
+}
+
+export default App
