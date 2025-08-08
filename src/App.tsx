@@ -1,84 +1,61 @@
+import { useForm } from 'react-hook-form';
 import './App.css'
-import { useState } from 'react';
+import { z } from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod';
+
+const userSchema = z.object({
+  firstName: z.string().min(1, { error: 'First name missing' }),
+  lastName: z.string().min(1, { error: 'Last name missing' }),
+  email: z.email({ error: 'Invalid email' }),
+  date: z.date({ error: 'Invalid date' })
+})
 
 function App() {
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
-  const [date, setDate] = useState("");
-  const [errors, setErrors] = useState<string[]>([])
-
-  const formValidation = () => {
-    const newErrors: string[] = []
-
-    if (firstName.trim().length == 0) {
-      newErrors.push('First name should not be empty')
+  const { register, handleSubmit, formState: { errors } } = useForm({
+    resolver: zodResolver(userSchema),
+    defaultValues: {
+      firstName: undefined,
+      lastName: undefined,
+      email: undefined,
+      date: undefined
     }
+  })
 
-    if (lastName.trim().length == 0) {
-      newErrors.push('Last name should not be empty')
-    }
-
-    const emailValidation = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
-    if (!emailValidation.test(email.trim())) {
-      newErrors.push('Invalid email format')
-    }
-
-    const dateValidation = new Date(date)
-    if (isNaN(dateValidation.getTime())) {
-      newErrors.push('Invalid date')
-    }
-
-    setErrors(newErrors)
-    return newErrors.length === 0
-  }
-
-  const submit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (formValidation()) {
-      alert('Form submitted successfully!');
-    }
-  };
+  const onSubmit = handleSubmit((data) => {
+    console.log(data)
+  })
 
   return (
     <div className="app">
-      <form onSubmit={submit}>
+      <form onSubmit={onSubmit}>
         <div>
           <label> Enter your first name
-            <input type="text" placeholder="first name" value={firstName} onChange={(e) => setFirstName(e.target.value)} required />
+            <input type="text" placeholder="first name" {...register('firstName')} />
+            <p style={{ color: 'red' }} >{errors.firstName?.message}</p>
           </label>
         </div>
 
         <div>
           <label> Enter your last name
-            <input type="text" placeholder="last name" value={lastName} onChange={(e) => setLastName(e.target.value)} required />
+            <input type="text" placeholder="last name" {...register('lastName')} />
+            <p style={{ color: 'red' }}>{errors.lastName?.message}</p>
           </label>
         </div>
 
         <div>
           <label> Enter your email address
-            <input type="text" placeholder="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+            <input type="text" placeholder="email" {...register('email')} />
+            <p style={{ color: 'red' }}>{errors.email?.message}</p>
           </label>
         </div>
 
         <div>
           <label> Enter your date of birth
-            <input type="date" placeholder="date of birth" value={date} onChange={(e) => setDate(e.target.value)} required />
+            <input type="date" placeholder="date of birth" {...register('date')} />
+            <p style={{ color: 'red' }}>{errors.date?.message}</p>
           </label>
         </div>
         <button type="submit"> Submit</button>
-
-        {errors.length > 0 && (
-          <div>
-            <ul>
-              {errors.map((error, index) => (
-                <li key={index}>{error}</li>
-              ))}
-            </ul>
-          </div>
-        )}
-
-
       </form>
     </div>
   )
