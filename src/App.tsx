@@ -7,7 +7,7 @@ const userSchema = z.object({
   firstName: z.string().min(1, { error: 'First name missing' }),
   lastName: z.string().min(1, { error: 'Last name missing' }),
   email: z.email({ error: 'Invalid email' }),
-  date: z.date({ error: 'Invalid date' })
+  date: z.coerce.date({ error: 'Invalid date' })
 })
 
 function App() {
@@ -20,6 +20,7 @@ function App() {
       date: undefined
     }
   })
+
 
   const onSubmit = handleSubmit((data) => {
     console.log(data)
@@ -60,5 +61,4 @@ function App() {
     </div>
   )
 }
-
-export default App
+export default App 
