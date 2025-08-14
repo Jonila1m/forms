@@ -8,4 +8,6 @@ input {
   display: flex;
 }
 
-
+button:disabled {
+  cursor: not-allowed;
+}

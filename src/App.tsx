@@ -2,6 +2,8 @@ import { useForm } from 'react-hook-form';
 import './App.css'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod';
+import InputField from './components/InputField';
+
 
 const userSchema = z.object({
   firstName: z.string().min(1, { error: 'First name missing' }),
@@ -11,7 +13,7 @@ const userSchema = z.object({
 })
 
 function App() {
-  const { register, handleSubmit, formState: { errors } } = useForm({
+  const { handleSubmit, control, formState: { isValid, isSubmitting } } = useForm({
     resolver: zodResolver(userSchema),
     defaultValues: {
       firstName: undefined,
@@ -31,34 +33,30 @@ function App() {
       <form onSubmit={onSubmit}>
         <div>
           <label> Enter your first name
-            <input type="text" placeholder="first name" {...register('firstName')} />
-            <p style={{ color: 'red' }} >{errors.firstName?.message}</p>
+            <InputField control={control} name='firstName' />
           </label>
         </div>
 
         <div>
           <label> Enter your last name
-            <input type="text" placeholder="last name" {...register('lastName')} />
-            <p style={{ color: 'red' }}>{errors.lastName?.message}</p>
+            <InputField control={control} name='lastName' />
           </label>
         </div>
 
         <div>
           <label> Enter your email address
-            <input type="text" placeholder="email" {...register('email')} />
-            <p style={{ color: 'red' }}>{errors.email?.message}</p>
+            <InputField control={control} name='email' type='email' />
           </label>
         </div>
 
         <div>
           <label> Enter your date of birth
-            <input type="date" placeholder="date of birth" {...register('date')} />
-            <p style={{ color: 'red' }}>{errors.date?.message}</p>
+            <InputField control={control} name='date' type='date' />
           </label>
         </div>
-        <button type="submit"> Submit</button>
+        <button type="submit" disabled={!isValid || isSubmitting}> Submit</button>
       </form>
     </div>
   )
 }
-export default App 
+export default App
